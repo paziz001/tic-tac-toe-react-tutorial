@@ -58,7 +58,7 @@ import './index.css';
 
   function Move(props) {
     const desc = props.move ?
-      `Go to move #${props.move} (row: ${props.step.lastPosition.row}, col: ${props.step.lastPosition.col})` :
+      `Go to move #${props.move} (row: ${props.row}, col: ${props.col})` :
       'Go to game start';
 
     return (
@@ -78,6 +78,7 @@ import './index.css';
       this.state = {
         history: [{
           squares: Array(9).fill(null),
+          moves: Array(1).fill(null),
           lastPosition: {}
         }],
         sortOrder: 'ASC',
@@ -90,9 +91,7 @@ import './index.css';
     render() {
       const history = this.state.history;
       const current = history[this.state.stepNumber];
-      const moves = history.map((step, move) => 
-        <Move key={move} className={this.tryAddActiveClass(move)} move={move} step={step} onClick={() => this.jumpTo(move)}></Move>
-      );
+      const moves = history.map((step, move) => this.renderMove(move, step.lastPosition.row, step.lastPosition.col));
       const winner = calculateWinner(current.squares);
       let status;
       if(winner) {
@@ -119,6 +118,16 @@ import './index.css';
             <ol>{moves}</ol>
           </div>
         </div>
+      );
+    }
+
+    renderMove(move, row, col) {
+      return (
+        <Move key={move}
+              className={this.tryAddActiveClass(move)}
+              move={move} row={row} col={col}
+              onClick={() => this.jumpTo(move)}>
+        </Move>
       );
     }
 
